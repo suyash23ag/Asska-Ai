@@ -15,10 +15,28 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// CORS configuration for production and development
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'http://localhost:5173',
+  'https://asska-ai-x9ca.vercel.app'
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 
@@ -42,6 +60,15 @@ const imagekit = new ImageKit({
 });
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+// Test endpoint to check if server is running
+app.get("/api/test", (req, res) => {
+  res.json({ 
+    status: "ok", 
+    message: "Backend is running",
+    timestamp: new Date().toISOString()
+  });
+});
 
 app.get("/api/upload", (req, res) => {
   const result = imagekit.getAuthenticationParameters();
@@ -397,8 +424,29 @@ app.post("/api/generate-image", ClerkExpressRequireAuth(), async (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(401).send("Unauthenticated!");
+  console.error('Error:', err);
+  
+  // Clerk authentication error
+  if (err.message && err.message.includes('Unauthenticated')) {
+    return res.status(401).json({ 
+      error: "Unauthenticated",
+      message: "Please sign in to continue" 
+    });
+  }
+  
+  // CORS error
+  if (err.message && err.message.includes('CORS')) {
+    return res.status(403).json({ 
+      error: "CORS Error",
+      message: "Origin not allowed" 
+    });
+  }
+  
+  // Generic error
+  res.status(err.status || 500).json({ 
+    error: err.message || "Internal Server Error",
+    message: "Something went wrong on the server"
+  });
 });
 
 app.listen(port, () => {
