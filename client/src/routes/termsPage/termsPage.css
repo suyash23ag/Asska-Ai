@@ -1,0 +1,71 @@
+.termsPage {
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+
+  .termsContainer {
+    width: 100%;
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding-bottom: 60px;
+
+    h1 {
+      font-size: 36px;
+      background: linear-gradient(to right, #217bfe, #e55571);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .lastUpdated {
+      color: #888;
+      font-size: 13px;
+      margin-top: -24px;
+    }
+
+    section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      h2 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #ececec;
+      }
+
+      p {
+        color: #aaa;
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      ul {
+        list-style: disc;
+        padding-left: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        li {
+          color: #aaa;
+          font-size: 14px;
+          line-height: 1.6;
+        }
+      }
+
+      a {
+        color: #217bfe;
+        text-decoration: underline;
+
+        &:hover {
+          color: #e55571;
+        }
+      }
+    }
+  }
+}

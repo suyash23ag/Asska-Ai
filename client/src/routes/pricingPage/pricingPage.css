@@ -1,0 +1,34 @@
+.pricingPage {
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px 60px;
+  gap: 40px;
+
+  .pricingHeader {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    h1 {
+      font-size: 36px;
+      background: linear-gradient(to right, #217bfe, #e55571);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    p {
+      color: #888;
+      font-size: 15px;
+    }
+  }
+
+  .pricingTableWrapper {
+    width: 100%;
+    max-width: 900px;
+  }
+}
