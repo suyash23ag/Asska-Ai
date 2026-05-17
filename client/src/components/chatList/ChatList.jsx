@@ -11,7 +11,13 @@ const ChatList = () => {
     queryFn: () =>
       fetch(`${import.meta.env.VITE_API_URL}/api/userchats`, {
         credentials: "include",
-      }).then((res) => res.json()),
+      }).then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      }),
+    retry: 1,
   });
 
   const deleteMutation = useMutation({
@@ -40,7 +46,7 @@ const ChatList = () => {
   };
 
   // Sort chats newest first
-  const sortedChats = data
+  const sortedChats = data && Array.isArray(data)
     ? [...data].sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       )
@@ -58,7 +64,10 @@ const ChatList = () => {
         {isPending ? (
           "Loading..."
         ) : error ? (
-          "Something went wrong!"
+          <div className="errorMessage">
+            <p>Something went wrong!</p>
+            <small>{error.message || "Unable to load chats"}</small>
+          </div>
         ) : sortedChats.length === 0 ? (
           <span className="noChats">No chats yet</span>
         ) : (
