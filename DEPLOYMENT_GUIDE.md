@@ -15,6 +15,8 @@ Before deploying, ensure you have:
   - OpenAI API Key
   - Clerk Authentication Keys
   - ImageKit Keys
+  hello my name is utkarsh 
+  
 
 ---
 
